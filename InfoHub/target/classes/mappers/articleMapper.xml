@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.infohub.project.articleMapper">
+	<select id="articleListAll" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.articleId,
+    a.title,
+    a.content,
+    a.published,
+    a.source,
+    a.views,
+    a.hearts,
+    a.image,
+    a.link,
+    a.articlecategories_categoriesNo, b.name
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo 
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="getTotalCountByCategory" parameterType="int" resultType="int">
+    SELECT COUNT(*) 
+    FROM article
+    WHERE articlecategories_categoriesNo = #{articlecategories_categoriesNo}
+	</select>
+
+	
+	<select id="articleListAll1" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 1
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleListAll2" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name 
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 2
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleListAll3" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name 
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 3
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleListAll4" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name 
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 4
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleListAll5" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name 
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 5
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleListAll6" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name 
+	FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo
+	where articlecategories_categoriesNo = 6
+	<include refid="searchCondition"></include>
+	order by published desc
+	limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="articleContent" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo where articleId = #{articleId} order by published desc;
+	</select>
+	
+	<update id="updateViews" parameterType="java.lang.Integer">
+	UPDATE article SET views = views + 1 WHERE articleId = #{articleId}
+	</update>
+	
+	<update id="updateHearts" parameterType="java.lang.Integer">
+	UPDATE article SET hearts = hearts + 1 WHERE articleId = #{articleId}
+	</update>
+	
+	<update id="cancleHearts" parameterType="java.lang.Integer">
+	UPDATE article SET hearts = hearts - 1 WHERE articleId = #{articleId}
+	</update>
+	
+	<select id="countHearts" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT hearts FROM article WHERE articleId = #{articleId}
+	</select>
+	 
+	 <sql id="searchCondition">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				and title like concat('%', #{keyword}, '%')
+			</if>
+			
+			<if test="searchType == 'c'.toString()">
+				and content like concat('%', #{keyword}, '%')
+			</if>
+						
+			<if test="searchType == 'tc'.toString()">
+				and (title like concat('%', #{keyword}, '%')
+					or content like concat('%', #{keyword}, '%'))
+			</if>
+		</if>
+	</sql>
+	
+	<select id="gettotalcount" resultType="int">
+		select count(articleID)
+		from article
+		where articleID > 0
+		<include refid="searchCondition"></include>
+		order by published desc
+		
+	</select>
+	
+	<select id="slistPage" resultType="com.infohub.project.article.ArticleVO">
+	select a.articleId, a.title, a.content, a.tags, a.published, a.source, a.views, a.hearts, a.image, a.login_loginNo, a.articlecategories_categoriesNo, b.name from article a join articleCategories b on b.categoriesNo = a.articlecategories_categoriesNo
+	<include refid="searchCondition"/>
+	order by published desc limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	
+	<select id="noArticleContent" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT a.*, b.name FROM article a join articlecategories b on articlecategories_categoriesNo = categoriesNo where articleId = #{articleId} order by published desc;
+	</select>
+	
+	
+	<select id="viewsArticle" resultType = "com.infohub.project.article.ArticleVO">
+	SELECT * FROM article order by views desc limit 5
+	</select>
+	
+	<select id="findAllArticles" resultType= "com.infohub.project.article.ArticleVO">
+	  SELECT articleId,title,content,published,source,views,hearts,image,link,articlecategories_categoriesNo
+	  FROM article order by hearts DESC
+	  limit 100
+	</select>
+	
+	<select id="elasticArticles" resultType= "com.infohub.project.article.ArticleVO">
+	  SELECT articleId,title,content,published,source,views,hearts,image,link,articlecategories_categoriesNo
+	  FROM article
+	</select>
+	
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.infohub.project.loginMapper">
+
+	<select id="listAll" resultType="com.infohub.project.login.LoginDTO">
+		SELECT * FROM infohub.login
+	</select>
+	
+	<select id="getUserById" resultType="com.infohub.project.login.LoginDTO">
+		SELECT * FROM infohub.login where userId = #{userId}
+	</select>
+	
+	<select id="getUserByname" resultType="com.infohub.project.login.LoginDTO">
+		SELECT * FROM infohub.login where name = #{name}
+	</select>
+	
+	<select id="login" resultType="com.infohub.project.login.LoginDTO">
+		SELECT * FROM infohub.login where userId = #{userId} and password = #{password}
+	</select>
+	
+	<select id="checkuserIdDuplicate" resultType="int">
+		SELECT count(userId) FROM infohub.login where userId = #{userId}
+	</select>
+	
+	<select id="checkNameDuplicate" resultType="int">
+		SELECT count(name) FROM infohub.login where name = #{name}
+	</select>
+	
+	<insert id="insertUser">
+		INSERT INTO infohub.login (userId, password, name, email, phone, createdDate, status, role, age, gender, keywords) 
+		VALUES (#{userId}, #{password}, #{name}, #{email}, #{phone}, now(), 1, 1, #{age}, #{gender}, #{keywords})
+	</insert>
+	
+	<update id="updateUser">
+		UPDATE infohub.login 
+		SET name = #{name}, email = #{email}, phone = #{phone}, password = #{password}, keywords = #{keywords}
+		WHERE (userId = #{userId})
+	</update>
+	
+	<update id="deleteUser">
+		UPDATE infohub.login SET status = 0
+		WHERE (userId = #{userId})
+	</update>
+	
+	<select id="findid" resultType="String">
+		select userId from infohub.login
+		where name = #{name} and email = #{email} and phone = #{phone}
+	</select>
+	
+	<select id="findpassword" resultType="int">
+		select count(password) from infohub.login
+		where userId = #{userId} and email = #{email} and phone = #{phone}
+	</select>
+	
+	<update id="updatepassword">
+		UPDATE infohub.login 
+		SET password = #{password}
+		WHERE userId = #{userId}
+	</update>
+	
+	<select id="checkPasswordById" resultType="String">
+		select password from infohub.login
+		where userId = #{userId}
+	</select>
+	
+	<update id="updateKeywords">
+		update infohub.login
+		set keywords = #{keywords}
+		where userId = #{userId}
+	</update>
+	
+	
+	<select id="findByKakaoId" parameterType="long" resultType="com.infohub.project.login.LoginDTO">
+        SELECT *
+        FROM infohub.login 
+        WHERE kakaoId = #{kakaoId}
+    </select>
+
+    <!-- 신규 사용자 추가 -->
+    <insert id="insert" parameterType="com.infohub.project.login.LoginDTO">
+    INSERT INTO infohub.login 
+    (userId, password, name, email, phone, createdDate, status, role, age, gender, keywords, kakaoId, kakaoEmail)
+    VALUES 
+    (#{userId}, #{password}, #{name}, #{email}, #{phone}, now(), 1, 1, #{age}, #{gender}, #{keywords}, #{kakaoId}, #{kakaoEmail})
+	</insert>
+	
+	
+</mapper>
